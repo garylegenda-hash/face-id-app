@@ -34,7 +34,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const result = await sendPasswordResetEmail(email, resetToken);
     if (!result.success) {
-      return res.status(500).json({ error: 'Failed to send email' });
+      console.error('Error al enviar email:', result.error);
+      return res.status(500).json({ 
+        error: result.error || 'Failed to send email',
+        details: 'Verifica la configuración de email en .env.local'
+      });
     }
 
     return res.status(200).json({ success: true });

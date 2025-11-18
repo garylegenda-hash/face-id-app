@@ -103,8 +103,23 @@ export default function ProductSales() {
       return;
     }
 
-    if (!customerName || !customerId) {
-      setError('Debes ingresar el nombre e ID del cliente');
+    if (!customerName || !customerName.trim()) {
+      setError('Debes ingresar el nombre del cliente');
+      return;
+    }
+
+    if (!customerId || !customerId.trim()) {
+      setError('Debes ingresar el ID del cliente');
+      return;
+    }
+
+    if (customerName.trim().length < 2) {
+      setError('El nombre del cliente debe tener al menos 2 caracteres');
+      return;
+    }
+
+    if (customerId.trim().length < 1) {
+      setError('El ID del cliente es requerido');
       return;
     }
 

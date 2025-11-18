@@ -42,6 +42,25 @@ export default function ProductRegistration() {
     setLoading(true);
 
     try {
+      // Validaciones
+      if (!name.trim()) {
+        throw new Error('El nombre del producto es requerido');
+      }
+
+      if (!description.trim()) {
+        throw new Error('La descripción es requerida');
+      }
+
+      const priceNum = parseFloat(price);
+      if (isNaN(priceNum) || priceNum <= 0) {
+        throw new Error('El precio debe ser un número mayor a 0');
+      }
+
+      const stockNum = parseInt(stock);
+      if (isNaN(stockNum) || stockNum < 0) {
+        throw new Error('El stock debe ser un número mayor o igual a 0');
+      }
+
       if (!image) {
         throw new Error('Debes capturar o seleccionar una imagen del producto');
       }
@@ -60,12 +79,13 @@ export default function ProductRegistration() {
 
       // Guardar producto en Firestore con imagen en base64
       await addDoc(collection(db, 'products'), {
-        name,
-        description,
-        price: parseFloat(price),
-        stock: parseInt(stock),
+        name: name.trim(),
+        description: description.trim(),
+        price: priceNum,
+        stock: stockNum,
         imageUrl: imageData, // Guardamos la imagen como base64
         createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       });
 
       setMessage('Producto registrado exitosamente');

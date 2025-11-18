@@ -12,7 +12,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { email, password, name, faceDescriptor } = req.body;
 
     if (!email || !password || !name) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      return res.status(400).json({ error: 'Todos los campos son requeridos' });
+    }
+
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: 'Email inválido' });
+    }
+
+    // Validar longitud de contraseña
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
+    }
+
+    // Validar nombre
+    if (name.trim().length < 2) {
+      return res.status(400).json({ error: 'El nombre debe tener al menos 2 caracteres' });
     }
 
     if (!db) {
@@ -25,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const snapshot = await getDocs(q);
 
     if (!snapshot.empty) {
-      return res.status(400).json({ error: 'User already exists' });
+      return res.status(400).json({ error: 'Este email ya está registrado' });
     }
 
     // Hash de la contraseña

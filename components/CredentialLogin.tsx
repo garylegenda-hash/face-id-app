@@ -2,9 +2,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { auth } from '../lib/firebase';
 import { signInAnonymously } from 'firebase/auth';
-import { db } from '../lib/firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import bcrypt from 'bcryptjs';
 
 export default function CredentialLogin() {
   const [email, setEmail] = useState('');
@@ -19,30 +16,19 @@ export default function CredentialLogin() {
     setLoading(true);
 
     try {
-      // Buscar usuario en Firestore
-      const usersRef = collection(db, 'users');
-      const q = query(usersRef, where('email', '==', email));
-      const querySnapshot = await getDocs(q);
+      // Llamar a la API route para verificar credenciales
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-      if (querySnapshot.empty) {
-        setError('Usuario no encontrado');
-        setLoading(false);
-        return;
-      }
+      const data = await response.json();
 
-      const userDoc = querySnapshot.docs[0];
-      const userData = userDoc.data();
-
-      // Verificar contraseña con bcrypt
-      if (userData.password) {
-        const isValid = await bcrypt.compare(password, userData.password);
-        if (!isValid) {
-        setError('Contraseña incorrecta');
-          setLoading(false);
-          return;
-        }
-      } else {
-        setError('Usuario sin contraseña válida');
+      if (!response.ok) {
+        setError(data.error || 'Error al iniciar sesión');
         setLoading(false);
         return;
       }
@@ -52,9 +38,9 @@ export default function CredentialLogin() {
       
       // Guardar información del usuario en localStorage
       localStorage.setItem('faceIdUser', JSON.stringify({
-        id: userDoc.id,
-        name: userData.name,
-        email: userData.email,
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
         loginMethod: 'credentials',
         loginTime: new Date().toISOString()
       }));

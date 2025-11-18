@@ -66,6 +66,18 @@ export default function Register() {
       return;
     }
 
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Por favor ingresa un email válido');
+      return;
+    }
+
+    if (!name.trim() || name.trim().length < 2) {
+      setError('El nombre debe tener al menos 2 caracteres');
+      return;
+    }
+
     if (registerFaceID && !faceDescriptor) {
       setError('Debes capturar tu rostro para Face ID');
       return;

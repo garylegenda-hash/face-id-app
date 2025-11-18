@@ -50,12 +50,30 @@ export default function InventoryManagement() {
     setMessage('');
 
     try {
+      // Validaciones
+      if (!editingProduct.name.trim()) {
+        throw new Error('El nombre del producto es requerido');
+      }
+
+      if (!editingProduct.description.trim()) {
+        throw new Error('La descripción es requerida');
+      }
+
+      if (editingProduct.price <= 0) {
+        throw new Error('El precio debe ser mayor a 0');
+      }
+
+      if (editingProduct.stock < 0) {
+        throw new Error('El stock no puede ser negativo');
+      }
+
       const productRef = doc(db, 'products', editingProduct.id);
       const updateData: any = {
-        name: editingProduct.name,
-        description: editingProduct.description,
+        name: editingProduct.name.trim(),
+        description: editingProduct.description.trim(),
         price: editingProduct.price,
         stock: editingProduct.stock,
+        updatedAt: new Date().toISOString(),
       };
 
       // Si hay una nueva imagen, guardarla como base64 (sin Storage)

@@ -25,7 +25,7 @@ npm install
 5. Crea un archivo `.env.local` en la raíz del proyecto:
 
 ```env
-NEXT_PUBLIC_FIREBASE_API_KEY=tu_api_key
+
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=tu_auth_domain
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=tu_project_id
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=tu_storage_bucket
