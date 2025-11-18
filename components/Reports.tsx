@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { db } from '../lib/firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { generateSalesReport, generateStockReport, generateCustomerReport } from '../lib/excelGenerator';
 import { VoiceCommand } from '../lib/voiceAI';
 
@@ -56,28 +56,35 @@ export default function Reports() {
         }
 
         const salesRef = collection(db, 'sales');
-        let q;
+        const snapshot = await getDocs(salesRef);
 
-        // Buscar por ID o nombre
-        if (/^\d+$/.test(rawSearch)) {
-          // Si es solo números, buscar por ID
-          q = query(salesRef, where('customerId', '==', rawSearch));
-        } else {
-          // Buscar por nombre (insensible a mayúsculas/minúsculas)
-          const searchLower = rawSearch.toLowerCase();
-          q = query(salesRef, where('customerNameLower', '==', searchLower));
-        }
+        const allSales = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as any[];
 
-        const snapshot = await getDocs(q);
+        const isIdSearch = /^\d+$/.test(rawSearch);
+        const searchLower = rawSearch.toLowerCase();
 
-        if (snapshot.empty) {
+        // Filtro en memoria para ignorar mayúsculas/minúsculas
+        const filtered = allSales.filter((sale) => {
+          if (isIdSearch) {
+            return (sale.customerId || '').trim() === rawSearch;
+          }
+          const nameSource =
+            (sale.customerNameLower as string | undefined) ??
+            (sale.customerName as string | undefined) ??
+            '';
+          return nameSource.toLowerCase() === searchLower;
+        });
+
+        if (filtered.length === 0) {
           setError('No se encontraron compras para este cliente');
           setLoading(false);
           return;
         }
 
-        const purchases = snapshot.docs.map(doc => {
-          const data = doc.data();
+        const purchases = filtered.map((data) => {
           return {
             date: new Date(data.date).toLocaleDateString('es-ES'),
             invoiceNumber: data.invoiceNumber,
@@ -85,7 +92,7 @@ export default function Reports() {
           };
         });
 
-        const firstDoc = snapshot.docs[0].data();
+        const firstDoc = filtered[0];
         const totalPurchases = purchases.reduce((sum, purchase) => sum + purchase.total, 0);
 
         generateCustomerReport({
