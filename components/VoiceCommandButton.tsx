@@ -82,7 +82,7 @@ export default function VoiceCommandButton({ onCommand }: VoiceCommandButtonProp
             zIndex: 101,
           }}
         >
-          🎤 Escuchando... Di "generar reporte de ventas", "reporte de inventario" o "compras del cliente [nombre/ID]"
+          🎤 Escuchando... Di &quot;generar reporte de ventas&quot;, &quot;reporte de inventario&quot; o &quot;compras del cliente [nombre/ID]&quot;
         </div>
       )}
     </>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { db } from '../lib/firebase';
 import { collection, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 
@@ -181,10 +182,12 @@ export default function InventoryManagement() {
                 onChange={handleImageChange}
               />
               {editingProduct.imageUrl && (
-                <img
+                <Image
                   src={editingProduct.imageUrl}
                   alt="Preview"
-                  style={{ maxWidth: '200px', marginTop: '10px', borderRadius: '8px' }}
+                  width={200}
+                  height={200}
+                  style={{ maxWidth: '200px', marginTop: '10px', borderRadius: '8px', height: 'auto' }}
                 />
               )}
             </div>
@@ -219,9 +222,11 @@ export default function InventoryManagement() {
                 <tr key={product.id}>
                   <td>
                     {product.imageUrl && (
-                      <img
+                      <Image
                         src={product.imageUrl}
                         alt={product.name}
+                        width={100}
+                        height={100}
                         className="product-image"
                       />
                     )}

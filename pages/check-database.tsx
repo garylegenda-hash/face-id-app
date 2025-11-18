@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { db, auth } from '../lib/firebase';
 import { collection, addDoc, getDocs, doc, getDoc, deleteDoc } from 'firebase/firestore';
 // Storage no se usa - las imágenes se guardan como base64 en Firestore
@@ -302,7 +303,7 @@ export default function CheckDatabase() {
           <li>
             <strong>Habilitar Authentication:</strong>
             <br />
-            Authentication → Comenzar → Habilitar "Anónimo"
+            Authentication → Comenzar → Habilitar &quot;Anónimo&quot;
           </li>
           <li>
             <strong>Habilitar Storage:</strong>
@@ -323,9 +324,9 @@ export default function CheckDatabase() {
       </div>
 
       <div style={{ marginTop: '20px', textAlign: 'center' }}>
-        <a href="/" style={{ color: '#667eea', textDecoration: 'none' }}>
+        <Link href="/" style={{ color: '#667eea', textDecoration: 'none' }}>
           ← Volver al Login
-        </a>
+        </Link>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 import Webcam from 'react-webcam';
 import { db } from '../lib/firebase';
 import { collection, addDoc } from 'firebase/firestore';
@@ -196,10 +197,12 @@ export default function ProductRegistration() {
 
           {image && (
             <div style={{ marginTop: '15px' }}>
-              <img
+              <Image
                 src={image}
                 alt="Preview"
-                style={{ maxWidth: '300px', borderRadius: '8px', marginTop: '10px' }}
+                width={300}
+                height={300}
+                style={{ maxWidth: '300px', borderRadius: '8px', marginTop: '10px', height: 'auto' }}
               />
               <button
                 type="button"
