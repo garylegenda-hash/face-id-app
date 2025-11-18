@@ -152,11 +152,13 @@ export default function ProductSales() {
       const invoiceNumber = `FAC-${Date.now()}`;
 
       // Guardar venta
+      const normalizedCustomerName = customerName.trim();
       const saleData = {
         invoiceNumber,
         date: new Date().toISOString(),
-        customerName,
-        customerId,
+        customerName: normalizedCustomerName,
+        customerNameLower: normalizedCustomerName.toLowerCase(),
+        customerId: customerId.trim(),
         items: cart.map(item => ({
           productId: item.productId,
           name: item.name,

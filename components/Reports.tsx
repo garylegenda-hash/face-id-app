@@ -47,7 +47,9 @@ export default function Reports() {
           products,
         });
       } else if (reportType === 'customer') {
-        if (!customerSearch.trim()) {
+        const rawSearch = customerSearch.trim();
+
+        if (!rawSearch) {
           setError('Debes ingresar el nombre o ID del cliente');
           setLoading(false);
           return;
@@ -57,12 +59,13 @@ export default function Reports() {
         let q;
 
         // Buscar por ID o nombre
-        if (/^\d+$/.test(customerSearch.trim())) {
+        if (/^\d+$/.test(rawSearch)) {
           // Si es solo números, buscar por ID
-          q = query(salesRef, where('customerId', '==', customerSearch.trim()));
+          q = query(salesRef, where('customerId', '==', rawSearch));
         } else {
-          // Buscar por nombre
-          q = query(salesRef, where('customerName', '==', customerSearch.trim()));
+          // Buscar por nombre (insensible a mayúsculas/minúsculas)
+          const searchLower = rawSearch.toLowerCase();
+          q = query(salesRef, where('customerNameLower', '==', searchLower));
         }
 
         const snapshot = await getDocs(q);
