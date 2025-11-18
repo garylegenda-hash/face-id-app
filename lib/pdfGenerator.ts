@@ -53,12 +53,12 @@ export function generateInvoicePDF(data: InvoiceData): void {
   doc.text(`Subtotal: $${data.subtotal.toFixed(2)}`, 140, finalY);
   doc.text(`IVA (19%): $${data.tax.toFixed(2)}`, 140, finalY + 7);
   doc.setFontSize(14);
-  doc.setFont(undefined, 'bold');
+  doc.setFont('helvetica', 'bold');
   doc.text(`TOTAL: $${data.total.toFixed(2)}`, 140, finalY + 15);
   
   // Footer
   doc.setFontSize(10);
-  doc.setFont(undefined, 'normal');
+  doc.setFont('helvetica', 'normal');
   doc.text('Gracias por su compra', 105, 280, { align: 'center' });
   
   // Save PDF
