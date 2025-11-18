@@ -24,7 +24,16 @@ function getTransporter() {
 
 export async function sendPasswordResetEmail(email: string, resetToken: string) {
   try {
-    const resetLink = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/reset-password?token=${resetToken}`;
+    // Determinar la URL base de la aplicación
+    // Prioridad:
+    // 1. NEXT_PUBLIC_APP_URL (configurable tanto en local como en producción)
+    // 2. VERCEL_URL (dominio que asigna Vercel automáticamente)
+    // 3. http://localhost:3000 (para entorno local sin variables)
+    const appUrl =
+      process.env.NEXT_PUBLIC_APP_URL ||
+      (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000');
+
+    const resetLink = `${appUrl}/reset-password?token=${resetToken}`;
     
     const transporter = getTransporter();
     
